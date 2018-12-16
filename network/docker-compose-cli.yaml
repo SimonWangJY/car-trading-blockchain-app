@@ -12,9 +12,6 @@ volumes:
   peer0.guazi.fancycar.com:
   peer1.guazi.fancycar.com:
 
-networks:
-  byfn:
-
 services:
 
   orderer.fancycar.com:
@@ -22,40 +19,51 @@ services:
       file:   base/docker-compose-base.yaml
       service: orderer.fancycar.com
     container_name: orderer.fancycar.com
-    networks:
-      - byfn
+
+  didicouchdb:
+    container_name: didicouchdb
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      DB_URL: http://localhost:5984/didi_db
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "5984:5984"
 
   peer0.didi.fancycar.com:
     container_name: peer0.didi.fancycar.com
     extends:
       file:  base/docker-compose-base.yaml
       service: peer0.didi.fancycar.com
-    networks:
-      - byfn
+    depends_on:
+      - orderer.fancycar.com
+      - didicouchdb
 
   peer1.didi.fancycar.com:
     container_name: peer1.didi.fancycar.com
     extends:
       file:  base/docker-compose-base.yaml
       service: peer1.didi.fancycar.com
-    networks:
-      - byfn
+    depends_on:
+      - orderer.fancycar.com
 
   peer0.guazi.fancycar.com:
     container_name: peer0.guazi.fancycar.com
     extends:
       file:  base/docker-compose-base.yaml
       service: peer0.guazi.fancycar.com
-    networks:
-      - byfn
+    depends_on:
+      - orderer.fancycar.com
 
   peer1.guazi.fancycar.com:
     container_name: peer1.guazi.fancycar.com
     extends:
       file:  base/docker-compose-base.yaml
       service: peer1.guazi.fancycar.com
-    networks:
-      - byfn
+    depends_on:
+      - orderer.fancycar.com
 
   cli:
     container_name: cli
@@ -65,7 +73,7 @@ services:
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      #- CORE_LOGGING_LEVEL=DEBUG
+      # - CORE_LOGGING_LEVEL=DEBUG
       - CORE_LOGGING_LEVEL=INFO
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.didi.fancycar.com:7051
@@ -76,7 +84,8 @@ services:
       - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/didi.fancycar.com/peers/peer0.didi.fancycar.com/tls/ca.crt
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/didi.fancycar.com/users/Admin@didi.fancycar.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: /bin/bash
+    command: /bin/bash -c './scripts/script.sh;'
+    # command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/
         - ./../chaincode/:/opt/gopath/src/github.com/chaincode
@@ -89,5 +98,3 @@ services:
       - peer1.didi.fancycar.com
       - peer0.guazi.fancycar.com
       - peer1.guazi.fancycar.com
-    networks:
-      - byfn

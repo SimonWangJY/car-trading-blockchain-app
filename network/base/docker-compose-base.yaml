@@ -42,7 +42,10 @@ services:
       - CORE_PEER_ADDRESS=peer0.didi.fancycar.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.didi.fancycar.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.didi.fancycar.com:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_LOCALMSPID=DidiMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=didicouchdb:5984
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/didi.fancycar.com/peers/peer0.didi.fancycar.com/msp:/etc/hyperledger/fabric/msp
@@ -62,16 +65,19 @@ services:
       - CORE_PEER_ADDRESS=peer1.didi.fancycar.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.didi.fancycar.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.didi.fancycar.com:7051
-      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_LOCALMSPID=DidiMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/didi.fancycar.com/peers/peer1.didi.fancycar.com/msp:/etc/hyperledger/fabric/msp
         - ../crypto-config/peerOrganizations/didi.fancycar.com/peers/peer1.didi.fancycar.com/tls:/etc/hyperledger/fabric/tls
         - peer1.didi.fancycar.com:/var/hyperledger/production
-
     ports:
       - 8051:7051
       - 8053:7053
+    # depends_on:
+    #   - orderer.fancycar.com
+      # - didicouchdb
 
   peer0.guazi.fancycar.com:
     container_name: peer0.guazi.fancycar.com
@@ -83,7 +89,8 @@ services:
       - CORE_PEER_ADDRESS=peer0.guazi.fancycar.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.guazi.fancycar.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.guazi.fancycar.com:7051
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_LOCALMSPID=GuaziMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/guazi.fancycar.com/peers/peer0.guazi.fancycar.com/msp:/etc/hyperledger/fabric/msp
@@ -92,6 +99,9 @@ services:
     ports:
       - 9051:7051
       - 9053:7053
+    # depends_on:
+    #   - orderer.fancycar.com
+      # - didicouchdb
 
   peer1.guazi.fancycar.com:
     container_name: peer1.guazi.fancycar.com
@@ -103,7 +113,8 @@ services:
       - CORE_PEER_ADDRESS=peer1.guazi.fancycar.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.guazi.fancycar.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.guazi.fancycar.com:7051
-      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_LOCALMSPID=GuaziMSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/guazi.fancycar.com/peers/peer1.guazi.fancycar.com/msp:/etc/hyperledger/fabric/msp
@@ -112,3 +123,6 @@ services:
     ports:
       - 10051:7051
       - 10053:7053
+    # depends_on:
+    #   - orderer.fancycar.com
+      # - didicouchdb
