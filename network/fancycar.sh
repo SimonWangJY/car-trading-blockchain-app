@@ -14,6 +14,12 @@ function clearconfig() {
 function generateconfig() {
   echo "generateConfig path"
   cd -
+
+  dir=./channel-artifacts/
+
+  if [[ ! -e $dir ]]; then
+      mkdir $dir
+  fi
   
   # create certificates and keys
   cryptogen generate --config ./crypto-config.yaml --output=crypto-config
