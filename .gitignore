@@ -1,2 +1,4 @@
 network/channel-artifacts/
 network/crypto-config/
+# network/fabric-ca-server/
+# !network/fabric-ca-server/*.yaml

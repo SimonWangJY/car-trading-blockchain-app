@@ -32,6 +32,25 @@ services:
     ports:
       - "5984:5984"
 
+  ca.didi.fancycar.com:
+    image: hyperledger/fabric-ca:1.2.0
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.didi.fancycar.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/3fe937e6dbac7a94b9308451299cbfbea35196f392d34e3edbfb290e2112d50f_sk
+      - FABRIC_CA_SERVER_CA_NAME=ca.didi.fancycar.com
+      #- FABRIC_CA_SERVER_TLS_ENABLED=true      
+      # - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-tlsca-server-config/tlsca.syngentaOrg.syngenta.com-cert.pem
+      # - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-tlsca-server-config/94758aa1f9c2abdc36feca8f40f77f00a3e1c95d6a6e457cf70d815e6d75c6fb_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw'
+    volumes:
+      - ./fabric-ca-server:/etc/hyperledger/fabric-ca-server
+      - ./crypto-config/peerOrganizations/didi.fancycar.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/didi.fancycar.com/tlsca/:/etc/hyperledger/fabric-tlsca-server-config
+    container_name: ca.didi.fancycar.com
+
   peer0.didi.fancycar.com:
     container_name: peer0.didi.fancycar.com
     extends:

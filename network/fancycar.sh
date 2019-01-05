@@ -5,6 +5,7 @@ function clearconfig() {
     echo $PWD
     rm -r crypto-config
     rm -rf channel-artifacts/*.block channel-artifacts/*.tx
+    rm -rf fabric-ca-server/fabric-ca-server.db
     cd -
 
     echo
